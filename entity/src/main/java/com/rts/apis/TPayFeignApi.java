@@ -100,4 +100,7 @@ public interface TPayFeignApi {
     @GetMapping(value = "/tPay/gateway/info")
     public ResultJson<String> getGatewayInfo();
 
+    @GetMapping(value = "/tPay/gateway/filter")
+    public ResultJson<String> getGatewayFilter();
+
 }

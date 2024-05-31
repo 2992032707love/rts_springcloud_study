@@ -4,18 +4,22 @@ package com.rts.util;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
-import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
-import com.baomidou.mybatisplus.generator.config.InjectionConfig;
-import com.baomidou.mybatisplus.generator.config.OutputFile;
-import com.baomidou.mybatisplus.generator.config.TemplateType;
+import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
+import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.querys.MySqlQuery;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
+import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
+import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Column;
 import com.baomidou.mybatisplus.generator.fill.Property;
 import com.baomidou.mybatisplus.generator.keywords.MySqlKeyWordsHandler;
+import com.baomidou.mybatisplus.generator.type.ITypeConvertHandler;
+import com.baomidou.mybatisplus.generator.type.TypeRegistry;
+import org.apache.ibatis.type.JdbcType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +28,7 @@ import java.util.Map;
 // 代码自动生成器
 public class Generator {
     // 数据库连接字段配置
-    private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/xiyue?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true";
+    private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/db2024?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true";
     private static final String JDBC_USER_NAME = "root";
     private static final String JDBC_PASSWORD = "root";
 
@@ -33,15 +37,15 @@ public class Generator {
 
     // 包名和模块名
     private static final String PACKAGE_NAME = "/com/rts";
-    private static final String SERVICE_PROJECT_PATH = "/cloud-provider-payment8001";
+    private static final String SERVICE_PROJECT_PATH = "/Self-developed-redis-component-framework9163";
 
     private static final String SERVICE_ENTITY_PATH = "/entity";
 
     // 表名,多个表使用英文逗号分割
-    private static final String[] TBL_NAMES = {"pms_product_order"};
+    private static final String[] TBL_NAMES = {"t_user"};
 
     // 表名的前缀,从表生成代码时会去掉前缀
-    private static final String TABLE_PREFIX = "ums_";
+    private static final String TABLE_PREFIX = "t_";
     /**
      * 服务模块名称
      */
@@ -127,8 +131,19 @@ public class Generator {
          */
         DataSourceConfig.Builder dataSourceConfigBuilder = new DataSourceConfig.Builder(JDBC_URL, JDBC_USER_NAME,
                 JDBC_PASSWORD)
-                .dbQuery(new MySqlQuery())
+                .schema("mybatis-plus")
+//                .dbQuery(new MySqlQuery())
                 .typeConvert(new MySqlTypeConvert())
+                .typeConvertHandler(new ITypeConvertHandler() {
+                    @Override
+                    public @NotNull IColumnType convert(GlobalConfig globalConfig, TypeRegistry typeRegistry, TableField.MetaInfo metaInfo) {
+                        // 兼容旧版本转换成Integer
+                        if (JdbcType.TINYINT == metaInfo.getJdbcType()) {
+                            return DbColumnType.BOOLEAN;
+                        }
+                        return typeRegistry.getColumnType(metaInfo);
+                    }
+                })
                 .keyWordsHandler(new MySqlKeyWordsHandler());
         FastAutoGenerator fastAutoGenerator = FastAutoGenerator.create(dataSourceConfigBuilder);
 
@@ -140,7 +155,7 @@ public class Generator {
 //                        .fileOverride()     // 覆盖已生成文件
                         .disableOpenDir()   // 不打开生成文件目录
                         .outputDir(projectPath + SERVICE_PROJECT_PATH + "/src/main/java") // 指定输出目录,注意斜杠的表示
-                        .author("vinjcent") // 设置注释的作者
+                        .author("rts") // 设置注释的作者
                         .commentDate("yyyy-MM-dd HH:mm:ss") // 设置注释的日期格式
                         .dateType(DateType.TIME_PACK)   // 使用java8新的时间类型
         );
@@ -221,7 +236,7 @@ public class Generator {
                         .enableSkipView()   // 开启跳过视图
                         .disableSqlFilter() // 禁用sql过滤
                         .addInclude(TBL_NAMES)  // 设置需要生成的表名
-//                        .addTablePrefix(TABLE_PREFIX)   // 设置过滤表前缀
+                        .addTablePrefix(TABLE_PREFIX)   // 设置过滤表前缀
         );
 
         /**
@@ -229,6 +244,7 @@ public class Generator {
          */
         fastAutoGenerator.strategyConfig(
                 strategyConfigBuilder -> strategyConfigBuilder.entityBuilder()
+                        .enableFileOverride()
                         .enableTableFieldAnnotation()   // 生成实体时生成字段的注解,包括@TableId注解等---
                         .naming(NamingStrategy.underline_to_camel)  // 数据库表和字段映射到实体的命名策略,为下划线转驼峰
                         .columnNaming(NamingStrategy.underline_to_camel)
@@ -239,7 +255,7 @@ public class Generator {
                         .addTableFills(new Column("create_time", FieldFill.INSERT)) // 自动填充配置  create_time  update_time 两种方式
                         .addTableFills(new Property("updateTime", FieldFill.INSERT_UPDATE))
                         .versionColumnName("version")   // 开启乐观锁
-                        .disableSerialVersionUID()  // 禁用生成 serialVersionUID,默认值:true
+//                        .disableSerialVersionUID()  // 禁用生成 serialVersionUID,默认值:true
                         .enableChainModel() // 开启实体类链式编程
                         .formatFileName("%s") // 实体名称格式化为XXX
         );
@@ -250,6 +266,7 @@ public class Generator {
         fastAutoGenerator.strategyConfig(
                 strategyConfigBuilder -> strategyConfigBuilder.controllerBuilder()
                         .enableRestStyle()  // 开启生成@RestController控制器
+                        .enableFileOverride()
                             // 开启驼峰转连字符 localhost:8080/hello_id_2
         );
 
@@ -259,6 +276,7 @@ public class Generator {
          */
         fastAutoGenerator.strategyConfig(
                 strategyConfigBuilder -> strategyConfigBuilder.serviceBuilder()
+                        .enableFileOverride()
                         .formatServiceFileName("%sService")
                         .formatServiceImplFileName("%sServiceImpl"));
 
@@ -268,6 +286,7 @@ public class Generator {
          */
         fastAutoGenerator.strategyConfig(
                 strategyConfigBuilder -> strategyConfigBuilder.mapperBuilder()
+                        .enableFileOverride()
                         .enableMapperAnnotation()   // 开启 @Mapper 注解
                         .formatMapperFileName("%sMapper")
                         .formatXmlFileName("%sMapper"));

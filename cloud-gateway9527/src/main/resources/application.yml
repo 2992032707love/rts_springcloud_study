@@ -18,16 +18,75 @@ spring:
         - id: tPay_routh1                  # 路由的ID(类似Mysql主键ID)，没有固定规则但要求唯一，建议配合服务名
           uri: lb://cloud-payment-service       # 匹配后提供服务的路由地址
           predicates:
-            - Path=/tPay/gateway/get/**,/tPay/gateway/info/**  # 断言，路径相匹配的进行路由
+#            - Path=/gateway/** # 断言，为配合PrefixPath测试过滤，暂时注释掉/tPay
+            - Path=/tPay/gateway/** # 断言，路径相匹配的进行路由  被拆分为：PrefixPath + Path
+#            - Path=/RTS/abc/{segment} # 断言，为配合SetPath测试，{segment}的内容最后被SetPath取代
 #            - After=2024-05-20T21:39:01.047418100+08:00[Asia/Shanghai]
-            - Between=2024-05-20T21:39:01.047418100+08:00[Asia/Shanghai],2024-05-25T22:39:01.047418100+08:00[Asia/Shanghai]
+            - Between=2024-05-20T21:39:01.047418100+08:00[Asia/Shanghai],2024-12-31T22:39:01.047418100+08:00[Asia/Shanghai]
 #            - Cookie=username, rts
 #            - Header=X-Request-Id, \d+ # 请求头要有X-Request-Id属性并且值为整数的正则表达式
 #            - Host=**.rents.com,**.anotherhost.org
 #            - Query=green
             - RemoteAddr=192.168.0.1/24 # 外部访问我的IP限制，最大跨度不超过32，目前是1~24他们是CIDR表示法
             - Method=GET,POST # 配置某个请求地址，只能用Get/Post方法访问，方法限制
-            - My=diamond
+#            - My=diamond
+          filters:
+            - My=RTS
+#            - RedirectTo=302, https://baomidou.com/reference/new-code-generator-configuration/ # 访问192.168.0.107:9527/tPay/gateway/filter 跳转到 https://baomidou.com/reference/new-code-generator-configuration/
+#            - SetPath=/tPay/gateway/{segment} # {segment}表示占位符，你写abc也行但要上下一致
+#            - PrefixPath=/tPay # http:192.168.0.107:9527/tPay/gateway/filter 被拆分为：PrefixPath + Path
+#            - AddRequestHeader=X-Request-rts1,rtsValue1 # 请求头kv，若一头含有多参则重写一行设置
+#            - AddRequestHeader=X-Request-rts2,rtsValue2
+            - AddRequestHeader=X-Request-xf,xfValue
+#            - RemoveRequestHeader=token # 删除请求头 token
+#            - SetRequestHeader=token1, xf  # 将请求头token1对应的值修改为xf
+#            - AddRequestParameter=customerId, 9527001    # 新增请求参数Parameter： k , v
+#            - RemoveRequestParameter=customerName     # 删除url请求参数customerName，你传递过来也是null
+#            - AddResponseHeader=X-Response-rts, xfRespose # 新增回应头X-Response-rts并设值为xfResponse
+#            - SetRequestHeader=Date,2099-11-11 # 设置回应头Date值为2099-11-11
+#            - RemoveResponseHeader=Content-Type # 将默认自带Content-Type回应属性删除
+
+        - id: myRedisCache_routh                # 路由的ID(类似Mysql主键ID)，没有固定规则但要求唯一，建议配合服务名
+          uri: lb://Self-developed-redis-component-framework      # 匹配后提供服务的路由地址
+          predicates:
+            - Path=/user/** # 断言，路径相匹配的进行路由
+            #            - After=2024-05-20T21:39:01.047418100+08:00[Asia/Shanghai]
+#              - Between=2024-05-20T21:39:01.047418100+08:00[Asia/Shanghai],2024-05-31T22:39:01.047418100+08:00[Asia/Shanghai]
+            #            - Cookie=username, rts
+            #            - Header=X-Request-Id, \d+ # 请求头要有X-Request-Id属性并且值为整数的正则表达式
+            #            - Host=**.rents.com,**.anotherhost.org
+            #            - Query=green
+            - RemoteAddr=192.168.0.1/24 # 外部访问我的IP限制，最大跨度不超过32，目前是1~24他们是CIDR表示法
+            - Method=GET,POST # 配置某个请求地址，只能用Get/Post方法访问，方法限制
+          #            - My=diamond
+#            filters:
+#              - AddRequestHeader=X-Request-rts1,rtsValue1 # 请求头kv，若一头含有多参则重写一行设置
+#              - AddRequestHeader=X-Request-rts2,rtsValue2
+#              - AddRequestHeader=X-Request-xf,xfValue
+#              - RemoveRequestHeader=token # 删除请求头 token
+#              - SetRequestHeader=token1, xf  # 将请求头token1对应的值修改为xf
+#              - AddRequestParameter=customerId, 9527001    # 新增请求参数Parameter： k , v
+#              - RemoveRequestParameter=customerName     # 删除url请求参数customerName，你传递过来也是null
+#              - AddResponseHeader=X-Response-rts, xfRespose # 新增回应头X-Response-rts并设值为xfResponse
+#              - SetRequestHeader=Date,2099-11-11 # 设置回应头Date值为2099-11-11
+#              - RemoveResponseHeader=Content-Type # 将默认自带Content-Type回应属性删除
+
+        - id: open_routh1                  # 路由的ID(类似Mysql主键ID)，没有固定规则但要求唯一，建议配合服务名
+          uri: lb://cloud-consumer-openfeign-order      # 匹配后提供服务的路由地址
+          predicates:
+            - Path=/feign/gateway/**  # 断言，路径相匹配的进行路由
+            #            - After=2024-05-20T21:39:01.047418100+08:00[Asia/Shanghai]
+            - Between=2024-05-20T21:39:01.047418100+08:00[Asia/Shanghai],2024-12-31T22:39:01.047418100+08:00[Asia/Shanghai]
+            #            - Cookie=username, rts
+            #            - Header=X-Request-Id, \d+ # 请求头要有X-Request-Id属性并且值为整数的正则表达式
+            #            - Host=**.rents.com,**.anotherhost.org
+            #            - Query=green
+            - RemoteAddr=192.168.0.1/24 # 外部访问我的IP限制，最大跨度不超过32，目前是1~24他们是CIDR表示法
+            - Method=GET,POST # 配置某个请求地址，只能用Get/Post方法访问，方法限制
+#          filters:
+#            - AddRequestHeader=X-Request-rts1,rtsValue1 # 请求头kv，若一头含有多参则重写一行设置
+#            - AddRequestHeader=X-Request-rts2,rtsValue2
+
 logging:
   level:
     root: info

@@ -73,6 +73,7 @@ public class TPayController {
     public ResultJson<List<TPay>> getAll(){
         return ResultJson.success(tPayService.getAll());
     }
+
     @Value("${server.port}")
     private String port;
 
