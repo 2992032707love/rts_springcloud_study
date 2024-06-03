@@ -1,0 +1,26 @@
+server:
+  port: 83
+spring:
+  application:
+    name: nacos-order-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+# 消费者将要去访问的微服务名称(nacos微服务提供者叫什么这写什么)
+service-url:
+  nacos-user-service: http://nacos-payment-provider
+
+logging:
+  level:
+    root: info
+    com:
+      rts: debug
+  file:
+    name: "D:/rts_springcloud_study/nacos-order-consumer83.log"
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger- %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger- %msg%n"
+feign:
+  sentinel:
+    enabled: true

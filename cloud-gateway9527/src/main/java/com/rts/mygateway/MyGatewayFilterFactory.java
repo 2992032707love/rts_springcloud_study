@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * @Author: RTS
@@ -57,6 +58,7 @@ public class MyGatewayFilterFactory extends AbstractGatewayFilterFactory<MyGatew
     }
 
     private Mono<Void> error(ServerHttpResponse response, ResultJson resultJson) {
+        Executors.newSingleThreadExecutor();
         response.setStatusCode(HttpStatus.OK);
 //        response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.getHeaders().set("Content-Type", "application/json;charset=utf-8");
