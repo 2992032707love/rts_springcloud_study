@@ -28,7 +28,7 @@ import java.util.Map;
 // 代码自动生成器
 public class Generator {
     // 数据库连接字段配置
-    private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/db2024?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true";
+    private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/transactional?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true";
     private static final String JDBC_USER_NAME = "root";
     private static final String JDBC_PASSWORD = "root";
 
@@ -37,12 +37,12 @@ public class Generator {
 
     // 包名和模块名
     private static final String PACKAGE_NAME = "/com/rts";
-    private static final String SERVICE_PROJECT_PATH = "/Self-developed-redis-component-framework9163";
+    private static final String SERVICE_PROJECT_PATH = "/Use-And-Invalidation-Of-Transaction-Annotations1119";
 
     private static final String SERVICE_ENTITY_PATH = "/entity";
 
     // 表名,多个表使用英文逗号分割
-    private static final String[] TBL_NAMES = {"t_user"};
+    private static final String[] TBL_NAMES = {"t_custom"};
 
     // 表名的前缀,从表生成代码时会去掉前缀
     private static final String TABLE_PREFIX = "t_";
@@ -236,7 +236,7 @@ public class Generator {
                         .enableSkipView()   // 开启跳过视图
                         .disableSqlFilter() // 禁用sql过滤
                         .addInclude(TBL_NAMES)  // 设置需要生成的表名
-                        .addTablePrefix(TABLE_PREFIX)   // 设置过滤表前缀
+//                        .addTablePrefix(TABLE_PREFIX)   // 设置过滤表前缀
         );
 
         /**
@@ -244,7 +244,7 @@ public class Generator {
          */
         fastAutoGenerator.strategyConfig(
                 strategyConfigBuilder -> strategyConfigBuilder.entityBuilder()
-                        .enableFileOverride()
+//                        .enableFileOverride()
                         .enableTableFieldAnnotation()   // 生成实体时生成字段的注解,包括@TableId注解等---
                         .naming(NamingStrategy.underline_to_camel)  // 数据库表和字段映射到实体的命名策略,为下划线转驼峰
                         .columnNaming(NamingStrategy.underline_to_camel)
@@ -266,7 +266,7 @@ public class Generator {
         fastAutoGenerator.strategyConfig(
                 strategyConfigBuilder -> strategyConfigBuilder.controllerBuilder()
                         .enableRestStyle()  // 开启生成@RestController控制器
-                        .enableFileOverride()
+//                        .enableFileOverride()
                             // 开启驼峰转连字符 localhost:8080/hello_id_2
         );
 
@@ -276,7 +276,7 @@ public class Generator {
          */
         fastAutoGenerator.strategyConfig(
                 strategyConfigBuilder -> strategyConfigBuilder.serviceBuilder()
-                        .enableFileOverride()
+//                        .enableFileOverride()
                         .formatServiceFileName("%sService")
                         .formatServiceImplFileName("%sServiceImpl"));
 
@@ -286,7 +286,7 @@ public class Generator {
          */
         fastAutoGenerator.strategyConfig(
                 strategyConfigBuilder -> strategyConfigBuilder.mapperBuilder()
-                        .enableFileOverride()
+//                        .enableFileOverride()
                         .enableMapperAnnotation()   // 开启 @Mapper 注解
                         .formatMapperFileName("%sMapper")
                         .formatXmlFileName("%sMapper"));

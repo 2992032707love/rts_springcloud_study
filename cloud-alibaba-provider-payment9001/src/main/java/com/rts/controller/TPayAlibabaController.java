@@ -3,6 +3,7 @@ package com.rts.controller;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.rts.common.ResultCode;
 import com.rts.common.ResultJson;
 import com.rts.entity.TPay;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,16 +30,26 @@ public class TPayAlibabaController {
         return ResultJson.success("nacos registry serverPort: " + serverport + ", id: " + id);
     }
 
-    // openfeign和sentinel
+    // openfeign和sentinel 进行服务降级和流量监控的整合处理case
     @GetMapping("/nacos/get/{orderNo}")
     @SentinelResource(value = "getPayByOrderNo", blockHandler = "handlerBlockHandler")
-    public ResultJson<TPay> getPayByOrderNo(@PathVariable("orderNo") String orderNo) {
+    public ResultJson<String> getPayByOrderNo(@PathVariable("orderNo") String orderNo) {
         // 模拟查询
-        TPay payDTO = new TPay(1024, orderNo, "tPay" + IdUtil.simpleUUID(), 1, BigDecimal.valueOf(9.9));
-        return ResultJson.success(payDTO);
+        TPay payDTO = new TPay(
+                1024,
+                orderNo,
+                "tPay" + IdUtil.simpleUUID(),
+                1,
+                BigDecimal.valueOf(9.9));
+        return ResultJson.success("查询返回值：" +payDTO);
     }
 
-    public ResultJson<TPay> handlerBlockHandler(String orderNo, BlockException e) {
-        return ResultJson.fail("服务提供者" + e.getMessage());
+    public ResultJson<String> handlerBlockHandler(String orderNo, BlockException e) {
+        return ResultJson.fail("getPayByOrderNo服务不可用，触发Sentinel 流控规则" + e.getMessage());
     }
+    /*
+    // fallback 服务降级方法纳入到Feign 接口统一处理，全局一个
+    public ResultJson<String> myFallBack(@PathVariable("orderNo") String orderNo, Throwable throwable){
+        return ResultJson.custom(ResultCode.RC201.getCode(), ResultCode.RC201.getMessage(), "异常情况：" + throwable.getMessage());
+    } */
 }

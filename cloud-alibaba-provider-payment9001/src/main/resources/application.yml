@@ -8,6 +8,10 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
+    sentinel:
+      transport:
+        dashboard: localhost:8080 # 配置Sentinel dashboard 控制台服务地址
+        port: 8719 # 默认的端口号为：8719。假如被占用，会自动从8719开始后一次+1扫描，直至找到未被占用的端口
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver

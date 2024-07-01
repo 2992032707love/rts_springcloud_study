@@ -11,7 +11,7 @@ public class SpringELDemo {
         Expression expression = spelExpressionParser.parseExpression(var);
 
         StandardEvaluationContext context = new StandardEvaluationContext();
-        context.setVariable("userid","xxbb0818");
+        context.setVariable("userid", "xxbb0818");
         String s = expression.getValue(context).toString();
         System.out.println(s);
     }

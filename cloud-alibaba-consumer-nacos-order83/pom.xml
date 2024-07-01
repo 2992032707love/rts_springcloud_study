@@ -18,10 +18,15 @@
     </properties>
 
     <dependencies>
+        <!-- openfeign -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <!-- alibaba-sentinel -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-            <version>2023.0.0.0-RC1</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

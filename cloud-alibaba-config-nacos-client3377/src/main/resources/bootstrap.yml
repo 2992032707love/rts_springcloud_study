@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: nacos-config-client
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+      config:
+        server-addr: localhost:8848
+        file-extension: yml
+        prefix: rts
+        group: PROD_GROUP
+        namespace: Prod_Namespcae
+
+#nacos端配置文件DataId的命名规则是：
+# ${spring.application.name}-${spring.profile.active}.${spring.cloud.nacos.config.file-extension}
+# ${prefix}-${spring.profiles.active}.${file-extension}
+# prefix 默认为 spring.application.name 的值，也可以通过配置项 spring.cloud.nacos.config.prefix来配置
+# 本案例的DataID是：rts-dev.yaml

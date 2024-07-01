@@ -11,6 +11,10 @@ spring:
 service-url:
   nacos-user-service: http://nacos-payment-provider
 
+# 激活 Sentinel 对 Feign 的支持
+feign:
+  sentinel:
+    enabled: true
 logging:
   level:
     root: info
@@ -21,6 +25,3 @@ logging:
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger- %msg%n"
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger- %msg%n"
-feign:
-  sentinel:
-    enabled: true
