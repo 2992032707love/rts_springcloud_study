@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: Rabbitmq-Springboot-consumer
+  rabbitmq:
+    host: 192.168.204.122
+    port: 5672
+    username: admin
+    password: 123456789
+    virtual-host: /
+logging:
+  level:
+    com.rts.mq: info
