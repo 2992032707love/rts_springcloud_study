@@ -13,7 +13,7 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual # 把消息确认模式改为手动模式
-        prefetch: 1 # 每次重队列中取回消息的数量
+#        prefetch: 10000 # 每次重队列中取回消息的数量
 logging:
   level:
     com.rts.mq: info

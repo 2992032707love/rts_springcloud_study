@@ -14,7 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class RabbitMQTest {
     public static final String EXCHANGE_DIRECT = "exchange.direct.order";
     public static final String EXCHANGE_DIRECT_TIMEOUT = "exchange.direct.timeout";
+    public static final String EXCHANGE_NORMAL = "exchange.normal.video";
 
+    public static final String ROUTING_KEY_NORMAL = "routing.key.normal.video";
     public static final String ROUTING_KEY = "order";
 
     public static final String ROUTING_KEY_TIMEOUT = "routing.key.test.timeout";
@@ -32,7 +34,7 @@ public class RabbitMQTest {
     public void test02SendMessage(){
         String message = "你好 Message--- Test prefetch--- 消息序号：";
 
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 200; i++) {
             rabbitTemplate.convertAndSend(EXCHANGE_DIRECT,ROUTING_KEY ,message + i);
         }
     }
@@ -63,4 +65,17 @@ public class RabbitMQTest {
         };
         rabbitTemplate.convertAndSend(EXCHANGE_DIRECT_TIMEOUT,ROUTING_KEY_TIMEOUT ,message + 1,postProcessor);
     }
+
+    /**
+     * 发送消息 死信消息产生原因一：拒绝
+     */
+    @Test
+    public void testSendMessageButReject() {
+        rabbitTemplate
+                .convertAndSend(
+                        EXCHANGE_NORMAL,
+                        ROUTING_KEY_NORMAL,
+                        "测试死信情况1：消息被拒绝");
+    }
+
 }
