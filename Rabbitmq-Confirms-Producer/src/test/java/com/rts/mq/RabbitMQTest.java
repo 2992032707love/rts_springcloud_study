@@ -2,6 +2,7 @@ package com.rts.mq;
 
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,7 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class RabbitMQTest {
     public static final String EXCHANGE_DIRECT = "exchange.direct.order";
+    public static final String EXCHANGE_DIRECT_TIMEOUT = "exchange.direct.timeout";
+
     public static final String ROUTING_KEY = "order";
+
+    public static final String ROUTING_KEY_TIMEOUT = "routing.key.test.timeout";
 
     @Resource
     private RabbitTemplate rabbitTemplate;
@@ -30,5 +35,32 @@ public class RabbitMQTest {
         for (int i = 1; i <= 100; i++) {
             rabbitTemplate.convertAndSend(EXCHANGE_DIRECT,ROUTING_KEY ,message + i);
         }
+    }
+
+    /**
+     * 队列层面的消息过期时间  单位毫秒
+     */
+    @Test
+    public void test03SendMessage(){
+        String message = "你好 Message--- Test timeout--- 消息序号：";
+
+        for (int i = 1; i <= 100; i++) {
+            rabbitTemplate.convertAndSend(EXCHANGE_DIRECT_TIMEOUT,ROUTING_KEY_TIMEOUT ,message + i);
+        }
+    }
+
+    /**
+     * 消息本身的过期时间设置  单位毫秒
+     */
+    @Test
+    public void test04SendMessage(){
+        String message = "你好 Message--- Test timeout--- 消息序号：";
+        // 创建消息后置处理器对象
+        MessagePostProcessor postProcessor = m -> {
+            // 设置消息的过期时间 7000毫秒
+            m.getMessageProperties().setExpiration("7000");
+            return m;
+        };
+        rabbitTemplate.convertAndSend(EXCHANGE_DIRECT_TIMEOUT,ROUTING_KEY_TIMEOUT ,message + 1,postProcessor);
     }
 }

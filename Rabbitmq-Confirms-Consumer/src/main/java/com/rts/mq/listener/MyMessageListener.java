@@ -19,6 +19,8 @@ public class MyMessageListener {
 
     public static final String QUEUE_NAME = "queue.order";
 
+    public static final String QUEUE_NAME_TIMEOUT = "queue.test.timeout";
+
 //    @RabbitListener(queues = {QUEUE_NAME})
     public void processMessage(String dataString, Message message, Channel channel) throws IOException {
 
