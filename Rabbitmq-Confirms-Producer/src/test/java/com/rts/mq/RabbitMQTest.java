@@ -22,4 +22,13 @@ public class RabbitMQTest {
         String message = "你好 Message--- Test Confire---";
         rabbitTemplate.convertAndSend(EXCHANGE_DIRECT,ROUTING_KEY + "uiasd",message);
     }
+
+    @Test
+    public void test02SendMessage(){
+        String message = "你好 Message--- Test prefetch--- 消息序号：";
+
+        for (int i = 1; i <= 100; i++) {
+            rabbitTemplate.convertAndSend(EXCHANGE_DIRECT,ROUTING_KEY ,message + i);
+        }
+    }
 }
