@@ -146,17 +146,45 @@ public class MyMessageListener {
         }
     }
 
-    @RabbitListener(queues = {QUEUE_NORMAL})
-    public void processMessageNormal(Message message, Channel channel) throws IOException {
-        // 监听正常队列，但是拒绝消息
-        log.info("★[normal]消息接收到，但我拒绝。");
-        channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
-    }
+//    /**
+//     * 接收消息 监听正常队列 死信消息产生原因一：拒绝
+//     * @param message
+//     * @param channel
+//     * @throws IOException
+//     */
+//    @RabbitListener(queues = {QUEUE_NORMAL})
+//    public void processMessageNormal(Message message, Channel channel) throws IOException {
+//        // 监听正常队列，但是拒绝消息
+//        log.info("★[normal]消息接收到，但我拒绝。");
+//        channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
+//    }
+
+    /**
+     * 监听死信队列
+     * @param dataString
+     * @param message
+     * @param channel
+     * @throws IOException
+     */
     @RabbitListener(queues = {QUEUE_DEAD_LETTER})
     public void processMessageDead(String dataString, Message message, Channel channel) throws IOException {
         // 监听死信队列
         log.info("★[dead letter]dataString = " + dataString);
         log.info("★[dead letter]我是死信监听方法，我接收到了死信消息");
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    }
+
+    /**
+     * 接收消息 监听正常队列 死信消息产生原因二：消息数量超过队列的最大容量
+     * 消息接收代码不再拒绝消息
+     * @param message
+     * @param channel
+     * @throws IOException
+     */
+    @RabbitListener(queues = {QUEUE_NORMAL})
+    public void processMessageNormal(Message message, Channel channel) throws IOException {
+        // 监听正常队列
+        log.info("★[normal]消息接收到。");
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 }

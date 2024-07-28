@@ -78,4 +78,28 @@ public class RabbitMQTest {
                         "测试死信情况1：消息被拒绝");
     }
 
+    /**
+     * 发送消息 死信消息产生原因二：消息数量超过队列的最大容量
+     */
+    @Test
+    public void testSendMultiMessage() {
+        for (int i = 0; i < 20; i++) {
+            rabbitTemplate.convertAndSend(
+                    EXCHANGE_NORMAL,
+                    ROUTING_KEY_NORMAL,
+                    "测试死信情况2：消息数量超过队列的最大容量" + i);
+        }
+    }
+
+    /**
+     * 发送消息 死信消息产生原因三：消息超时未消费
+     */
+    @Test
+    public void testSendMessageTimeout() {
+        rabbitTemplate
+                .convertAndSend(
+                        EXCHANGE_NORMAL,
+                        ROUTING_KEY_NORMAL,
+                        "测试死信情况3：消息超时");
+    }
 }
