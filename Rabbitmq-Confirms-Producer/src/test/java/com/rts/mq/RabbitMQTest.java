@@ -6,6 +6,9 @@ import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @Author: RTS
  * @CreateDateTime: 2024/7/24 20:44
@@ -15,11 +18,13 @@ public class RabbitMQTest {
     public static final String EXCHANGE_DIRECT = "exchange.direct.order";
     public static final String EXCHANGE_DIRECT_TIMEOUT = "exchange.direct.timeout";
     public static final String EXCHANGE_NORMAL = "exchange.normal.video";
+    public static final String EXCHANGE_DELAY = "exchange.test.delay";
 
     public static final String ROUTING_KEY_NORMAL = "routing.key.normal.video";
     public static final String ROUTING_KEY = "order";
 
     public static final String ROUTING_KEY_TIMEOUT = "routing.key.test.timeout";
+    public static final String ROUTING_KEY_DELAY = "routing.key.test.delay";
 
     @Resource
     private RabbitTemplate rabbitTemplate;
@@ -101,5 +106,27 @@ public class RabbitMQTest {
                         EXCHANGE_NORMAL,
                         ROUTING_KEY_NORMAL,
                         "测试死信情况3：消息超时");
+    }
+
+    /**
+     * 发送消息 延迟队列
+     */
+    @Test
+    public void testSendMessageDelay() {
+        // 创建消息后置处理器
+        MessagePostProcessor postProcessor = message -> {
+            // 设置消息过期时间(以毫秒为单位)
+            // x-delay 参数必须基于 x-delayed-message-exchange 插件才能生效
+            message.getMessageProperties().setHeader("x-delay","10000");
+
+            return message;
+        };
+        // 发送消息
+        rabbitTemplate.convertAndSend(
+                EXCHANGE_DELAY,
+                ROUTING_KEY_DELAY,
+                "test delay message by plugin " + new SimpleDateFormat("HH:mm:ss").format(new Date()),
+                postProcessor
+        );
     }
 }

@@ -3,10 +3,12 @@ package com.rts.mq.listener;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,6 +31,7 @@ public class MyMessageListener {
 
     public static final String QUEUE_NORMAL = "queue.normal.video";
     public static final String QUEUE_DEAD_LETTER = "queue.dead.letter.video";
+    public static final String QUEUE_DELAY = "queue.test.delay";
 
 //    @RabbitListener(queues = {QUEUE_NAME})
     public void processMessage(String dataString, Message message, Channel channel) throws IOException {
@@ -185,6 +188,35 @@ public class MyMessageListener {
     public void processMessageNormal(Message message, Channel channel) throws IOException {
         // 监听正常队列
         log.info("★[normal]消息接收到。");
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    }
+
+    /**
+     * 未创建队列和交换机
+     */
+//    public static final String EXCHANGE_DELAY = "exchange.test.delay";
+//    public static final String ROUTING_KEY_DELAY = "routing.key.test.delay";
+//    @RabbitListener(bindings = @QueueBinding(
+//            value = @Queue(value = QUEUE_DELAY, durable = "true", autoDelete = "false"),
+//            exchange = @Exchange(
+//                    value = EXCHANGE_DELAY,
+//                    durable = "true",
+//                    autoDelete = "false",
+//                    type = "x-delayed-message",
+//                    arguments = @Argument(name = "x-delayed-type", value = "direct")),
+//            key = {ROUTING_KEY_DELAY}
+//    ))
+    /**
+     * 延迟队列 消费者端 已创建队列和交换机
+     * @param dataString
+     * @param message
+     * @param channel
+     * @throws IOException
+     */
+    @RabbitListener(queues = {QUEUE_DELAY})
+    public void processMessageDelay(String dataString, Message message, Channel channel) throws IOException{
+        log.info("[生产者][消息本身]" + dataString);
+        log.info("[消费者][当前时间]" + new SimpleDateFormat("hh:mm:ss").format(new Date()));
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 }
