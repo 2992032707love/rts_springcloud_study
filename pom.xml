@@ -30,6 +30,7 @@
         <module>Rabbitmq-Springboot-Producer</module>
         <module>Rabbitmq-Confirms-Producer</module>
         <module>Rabbitmq-Confirms-Consumer</module>
+        <module>Rabbitmq-tx-Producer</module>
     </modules>
     <packaging>pom</packaging>
 
