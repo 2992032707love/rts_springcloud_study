@@ -32,6 +32,7 @@ public class MyMessageListener {
     public static final String QUEUE_NORMAL = "queue.normal.video";
     public static final String QUEUE_DEAD_LETTER = "queue.dead.letter.video";
     public static final String QUEUE_DELAY = "queue.test.delay";
+    public static final String QUEUE_PRIORITY = "queue.test.priority";
 
 //    @RabbitListener(queues = {QUEUE_NAME})
     public void processMessage(String dataString, Message message, Channel channel) throws IOException {
@@ -215,6 +216,13 @@ public class MyMessageListener {
      */
     @RabbitListener(queues = {QUEUE_DELAY})
     public void processMessageDelay(String dataString, Message message, Channel channel) throws IOException{
+        log.info("[生产者][消息本身]" + dataString);
+        log.info("[消费者][当前时间]" + new SimpleDateFormat("hh:mm:ss").format(new Date()));
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    }
+
+    @RabbitListener(queues = {QUEUE_PRIORITY})
+    public void processMessagePriority(String dataString, Message message, Channel channel) throws IOException {
         log.info("[生产者][消息本身]" + dataString);
         log.info("[消费者][当前时间]" + new SimpleDateFormat("hh:mm:ss").format(new Date()));
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);

@@ -19,7 +19,8 @@ public class RabbitMQTest {
     public static final String EXCHANGE_DIRECT_TIMEOUT = "exchange.direct.timeout";
     public static final String EXCHANGE_NORMAL = "exchange.normal.video";
     public static final String EXCHANGE_DELAY = "exchange.test.delay";
-
+    public static final String EXCHANGE_PRIORITY = "exchange.test.priority";
+    public static final String ROUTING_KEY_PRIORITY = "routing.key.test.priority";
     public static final String ROUTING_KEY_NORMAL = "routing.key.normal.video";
     public static final String ROUTING_KEY = "order";
 
@@ -118,9 +119,13 @@ public class RabbitMQTest {
             // 设置消息过期时间(以毫秒为单位)
             // x-delay 参数必须基于 x-delayed-message-exchange 插件才能生效
             message.getMessageProperties().setHeader("x-delay","10000");
+            System.out.println(message.getMessageProperties().getReceivedDeliveryMode());
+            System.out.println(message.getMessageProperties().toString());
+            System.out.println("设置延迟时间为10s");
 
             return message;
         };
+        System.out.println(postProcessor.toString());
         // 发送消息
         rabbitTemplate.convertAndSend(
                 EXCHANGE_DELAY,
@@ -128,5 +133,21 @@ public class RabbitMQTest {
                 "test delay message by plugin " + new SimpleDateFormat("HH:mm:ss").format(new Date()),
                 postProcessor
         );
+    }
+
+    /**
+     * 发送消息 优先级队列  优先级数字越大优先级越高 切记：不能超过 x-max-priority的值这里设置为10
+     */
+    @Test
+    public void testSendMessagePriority() {
+        rabbitTemplate.convertAndSend(
+                EXCHANGE_PRIORITY,
+                ROUTING_KEY_PRIORITY,
+                "I am a message with priority 3.",
+                message -> {
+                    // 设置消息优先级
+                    // 数字越大优先级越高 切记：不能超过 x-max-priority的值这里设置为10
+                    message.getMessageProperties().setPriority(3);
+                    return message;});
     }
 }
