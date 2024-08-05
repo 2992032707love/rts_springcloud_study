@@ -1,0 +1,17 @@
+server:
+  port: 8086
+spring:
+  application:
+    name: rabbitmq-cluster-consumer
+  rabbitmq:
+    host: 192.168.204.122
+    port: 33333
+    username: admin
+    password: 123456789
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual # 把消息确认模式改为手动模式
+logging:
+  level:
+    com.rts: info

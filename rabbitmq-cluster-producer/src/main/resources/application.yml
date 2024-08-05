@@ -1,0 +1,16 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: rabbitmq-cluster-producer
+  rabbitmq:
+    host: 192.168.204.122
+    port: 33333
+    username: admin
+    password: 123456789
+    virtual-host: /
+    publisher-confirm-type: correlated  # 交换机的确认
+    publisher-returns: true  # 队列的确认
+logging:
+  level:
+    com.rts: info

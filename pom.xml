@@ -31,6 +31,8 @@
         <module>Rabbitmq-Confirms-Producer</module>
         <module>Rabbitmq-Confirms-Consumer</module>
         <module>Rabbitmq-tx-Producer</module>
+        <module>rabbitmq-cluster-producer</module>
+        <module>rabbitmq-cluster-consumer</module>
     </modules>
     <packaging>pom</packaging>
 
